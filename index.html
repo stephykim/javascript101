@@ -1,3 +1,4 @@
+<!-- https://github.com/stephykim/javascript101.git -->
 <!DOCTYPE html>
 <html>
     <h3>Javascript Basics</h3>
@@ -34,15 +35,15 @@
     }
 
     .red {
-        background-image: red;
+        background-color: red;
     }
 
     .blue {
-        background-image: blue;
+        background-color: blue;
     }
 
     .gold {
-        background-image: gold;
+        background-color: gold;
     }
 </style>
 
@@ -81,6 +82,7 @@
         var rootDiv = document.createElement('div');
         rootDiv.id = 'rootContainer';
         var companyNamesContainer = document.createElement('div');
+        companyNamesContainer.className = 'startups-container';
         chicagoStartups.forEach( function(chicagoStartup, index) {
             var childDiv = document.createElement('div');
             var text = document.createTextNode(index.toString().concat(' .) ').concat(chicagoStartup));
@@ -110,7 +112,8 @@
             }
             else {
                 //TODO:: REPLACE [chicagoStartups.reverse()] WITH A FUNCTION CALLED "chicagoStartupsReverse"
-                chicagoStartups.reverse().forEach( function(startup) {
+                //chicagoStartupsReverse();
+                chicagoStartupsReverse().forEach( function(startup) {
                     var childDiv = document.createElement('div');
                     var text = document.createTextNode(startup);
                     childDiv.appendChild(text);
@@ -122,6 +125,11 @@
 
     function chicagoStartupsReverse() {
         var reversedStartups = [];
+        var listLength = chicagoStartups.length - 1;
+        while (listLength >= 0) {
+            reversedStartups.push(chicagoStartups[listLength])
+            listLength--;
+        }
         /*
             TODO: REVERSE THE CONTENTS OF THE ARRAY WITHOUT USING THE BUILT IN REVERSE METHOD
                   RETURN THE REVERSED ARRAY
@@ -144,11 +152,31 @@
               DONT FORGET TO REMOVE LEADING AND TRAILING WHITESPACES AS WELL
         */
 
+        if (cleanedList = document.getElementById('cleanedContainer')) {
+            console.log("List already cleaned");
+        }
+        else {
+            var cleanContainer = document.createElement('div');
+            cleanContainer.id = "cleanedContainer";
+            cleanContainer.className = 'blue';
+            chicagoStartups.forEach(function(chicagoStartup){
+                var cleanedStartup = chicagoStartup.replace(/[^\w\s]/gi, "").replace(/\s+/g," ").trim();
+                console.log(cleanedStartup);
+                var childDiv = document.createElement('div');
+                var text = document.createTextNode(cleanedStartup + " - " + cleanedStartup.length);
+                childDiv.appendChild(text);
+                cleanContainer.appendChild(childDiv);
+            });
+            var parentElement = document.getElementById('rootContainer');
+            var beforeReverseElement = parentElement.firstChild.nextSibling;
+            parentElement.insertBefore(cleanContainer, beforeReverseElement);
+        }
     }
     
     function initReverse() {
         var reverseContainer = document.createElement('div');
         reverseContainer.id = 'reverseContainer';
+        reverseContainer.className = 'red';
         var reverseBtn = document.createElement('button');
         var btnText = document.createTextNode('Reverse');
         reverseBtn.onclick = renderReversedElements;
@@ -174,11 +202,48 @@
 
             3.  
         */
+        var startupList = document.getElementById('rootContainer').firstChild;
+        var startupListTag = startupList.firstChild.tagName;
+        var toggledStartupList = [];
+        var divOrSpan;
+        if (startupListTag == "DIV") {
+            divOrSpan = 'span';
+            startupList.classList.remove('startups-container');
+            startupList.classList.add('gold');
+        }
+        else {
+            divOrSpan = 'div';
+            startupList.classList.remove('gold');
+            startupList.classList.add('startups-container');
+
+        }
+        while (startupList.hasChildNodes()) {
+                toggledStartupList.push(startupList.firstChild.innerHTML);
+                startupList.removeChild(startupList.firstChild);
+            }
+            toggledStartupList.forEach(function(chicagoStartup) {
+                var child = document.createElement(divOrSpan);
+                var text = document.createTextNode(chicagoStartup);
+                child.appendChild(text);
+                startupList.appendChild(child);
+
+            });
     }
     
+    function initToggle() {
+        var toggleBtn = document.createElement('button');
+        var btnText = document.createTextNode('Toggle Display');
+        toggleBtn.onclick = toggleDisplay;
+        toggleBtn.appendChild(btnText);
+        var toggleButtonContainer = document.createElement('div');
+        toggleButtonContainer.appendChild(toggleBtn);
+        document.getElementById('rootContainer').appendChild(toggleButtonContainer);
+    }
+
     function run() {
         initDocument();
         initReverse();
+        initToggle();
     }
     run();
     
@@ -222,6 +287,6 @@
                         `);
         }
         
-    });
+    })();
 
 </script>
